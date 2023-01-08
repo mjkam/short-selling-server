@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -19,8 +20,7 @@ public class Top50Service {
     public List<StockRecord> getTop50() {
         FetchRecord lastestFetchRecord = fetchRecordRepository.findLatestOne(PageRequest.of(0, 1)).stream()
                 .findAny()
-                .orElse(null);
-        // Todo: add when null
+                .orElseThrow(() -> new EntityNotFoundException("FetchRecord not found"));
         return stockRecordRepository.findTop50(lastestFetchRecord.getStockRecordDate(), PageRequest.of(0, 50));
     }
 }
