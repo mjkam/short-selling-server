@@ -17,8 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Top50ServiceTests {
-
-
     @Test
     void getTop50Test() {
         //given
@@ -46,6 +44,20 @@ public class Top50ServiceTests {
         //then
     }
 
+    @Test
+    void throwExceptionWhenStockRecordListSizeIsNot50() {
+        //given
+        Top50Service top50Service = new Top50Service(
+                new FetchRecordRepositoryMemoryImpl(), new StockRecordRepositoryShortListMemoryImpl());
+
+        //when
+        assertThatThrownBy(top50Service::getTop50)
+                .isInstanceOf(IllegalStateException.class);
+
+        //then
+
+    }
+
     private static class FetchRecordRepositoryNotExistMemoryImpl implements FetchRecordRepository {
         @Override
         public List<FetchRecord> findLatestOne(Pageable pageable) {
@@ -71,6 +83,20 @@ public class Top50ServiceTests {
             }
             List<StockRecord> stockRecords = new ArrayList<>();
             for (int i=0; i<50; i++) {
+                stockRecords.add(new StockRecord());
+            }
+            return stockRecords;
+        }
+    }
+
+    private static class StockRecordRepositoryShortListMemoryImpl implements StockRecordRepository{
+        @Override
+        public List<StockRecord> findTop50(LocalDate stockRecordDate, Pageable pageable) {
+            if (pageable.getPageSize() != 50 || pageable.getPageNumber() != 0) {
+                throw new RuntimeException(String.format("expected: %d-%d, actual %d-%d", 0, 50, pageable.getPageNumber(), pageable.getPageSize()));
+            }
+            List<StockRecord> stockRecords = new ArrayList<>();
+            for (int i=0; i<30; i++) {
                 stockRecords.add(new StockRecord());
             }
             return stockRecords;
