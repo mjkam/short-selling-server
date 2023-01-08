@@ -8,19 +8,22 @@ import com.example.demo.service.Top50Service;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Top50ServiceTests {
-    private Top50Service top50Service = new Top50Service(
-            new FetchRecordRepositoryMemoryImpl(), new StockRecordRepositoryMemoryImpl());
+
 
     @Test
     void getTop50Test() {
         //given
+        Top50Service top50Service = new Top50Service(
+                new FetchRecordRepositoryMemoryImpl(), new StockRecordRepositoryMemoryImpl());
         int top50RecordNum = 50;
 
         //when
@@ -28,6 +31,26 @@ public class Top50ServiceTests {
 
         //then
         assertThat(top50Records.size()).isEqualTo(top50RecordNum);
+    }
+
+    @Test
+    void throwExceptionWhenFetchRecordNotExist() {
+        //given
+        Top50Service top50Service = new Top50Service(
+                new FetchRecordRepositoryNotExistMemoryImpl(), new StockRecordRepositoryMemoryImpl());
+
+        //when
+        assertThatThrownBy(top50Service::getTop50)
+                .isInstanceOf(EntityNotFoundException.class);
+
+        //then
+    }
+
+    private static class FetchRecordRepositoryNotExistMemoryImpl implements FetchRecordRepository {
+        @Override
+        public List<FetchRecord> findLatestOne(Pageable pageable) {
+            return new ArrayList<>();
+        }
     }
 
     private static class FetchRecordRepositoryMemoryImpl implements FetchRecordRepository {
