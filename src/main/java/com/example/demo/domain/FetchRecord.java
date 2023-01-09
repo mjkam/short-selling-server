@@ -17,7 +17,11 @@ public class FetchRecord {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "stock_record_date")
     private LocalDate stockRecordDate;
+
+    @Column(name = "executed_datetime")
+    private LocalDateTime executedDateTime;
 
     public LocalDate getStockRecordDate() {
         return this.stockRecordDate;

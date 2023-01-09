@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FetchRecordRepository {
+public interface FetchRecordRepository extends JpaRepository<FetchRecord, Long> {
     List<FetchRecord> findLatestOne(Pageable pageable);
 }
