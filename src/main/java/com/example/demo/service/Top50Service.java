@@ -20,10 +20,11 @@ public class Top50Service {
 
     @Transactional(readOnly = true)
     public List<StockRecord> getTop50() {
-        FetchRecord lastestFetchRecord = fetchRecordRepository.findLatestOne(PageRequest.of(0, 1)).stream()
+        FetchRecord lastestFetchRecord = fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1)).stream()
                 .findAny()
                 .orElseThrow(() -> new EntityNotFoundException("FetchRecord not found"));
-        List<StockRecord> top50 = stockRecordRepository.findTop50(lastestFetchRecord.getStockRecordDate(), PageRequest.of(0, 50));
+        List<StockRecord> top50 = stockRecordRepository
+                .findByRecordDateOrderByShortSellingRatioDesc(lastestFetchRecord.getStockRecordDate(), PageRequest.of(0, 50));
         if (top50.size() != 50) {
             throw new IllegalStateException(String.format("top50 size expected 50, actual: %d", top50.size()));
         }

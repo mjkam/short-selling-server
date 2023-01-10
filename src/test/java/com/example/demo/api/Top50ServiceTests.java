@@ -7,11 +7,9 @@ import com.example.demo.repository.StockRecordRepository;
 import com.example.demo.service.Top50Service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,7 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class Top50ServiceTests {
@@ -67,8 +65,8 @@ public class Top50ServiceTests {
         LocalDateTime executionDateTime = localDateTime("2022-12-12 00:00:00");
         FetchRecord fetchRecord = fetchRecord(stockRecordDate, executionDateTime);
 
-        given(fetchRecordRepository.findLatestOne(PageRequest.of(0, 1))).willReturn(List.of(fetchRecord));
-        given(stockRecordRepository.findTop50(stockRecordDate, PageRequest.of(0, top50RecordNum))).willReturn(stockRecords(stockRecordDate, top50RecordNum));
+        given(fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1))).willReturn(List.of(fetchRecord));
+        given(stockRecordRepository.findByRecordDateOrderByShortSellingRatioDesc(stockRecordDate, PageRequest.of(0, top50RecordNum))).willReturn(stockRecords(stockRecordDate, top50RecordNum));
         Top50Service top50Service = new Top50Service(fetchRecordRepository, stockRecordRepository);
 
         //when
@@ -82,7 +80,7 @@ public class Top50ServiceTests {
     @Test
     void throwExceptionWhenFetchRecordNotExist() {
         //given
-        given(fetchRecordRepository.findLatestOne(PageRequest.of(0, 1))).willReturn(new ArrayList<>());
+        given(fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1))).willReturn(new ArrayList<>());
         Top50Service top50Service = new Top50Service(fetchRecordRepository, stockRecordRepository);
 
         //when
@@ -100,8 +98,8 @@ public class Top50ServiceTests {
         LocalDateTime executionDateTime = localDateTime("2022-12-12 00:00:00");
         FetchRecord fetchRecord = fetchRecord(stockRecordDate, executionDateTime);
 
-        given(fetchRecordRepository.findLatestOne(PageRequest.of(0, 1))).willReturn(List.of(fetchRecord));
-        given(stockRecordRepository.findTop50(stockRecordDate, PageRequest.of(0, top50RecordNum))).willReturn(stockRecords(stockRecordDate, 1));
+        given(fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1))).willReturn(List.of(fetchRecord));
+        given(stockRecordRepository.findByRecordDateOrderByShortSellingRatioDesc(stockRecordDate, PageRequest.of(0, top50RecordNum))).willReturn(stockRecords(stockRecordDate, 1));
         Top50Service top50Service = new Top50Service(fetchRecordRepository, stockRecordRepository);
 
         //when
