@@ -1,7 +1,9 @@
 package com.example.demo.api;
 
 import com.example.demo.domain.FetchRecord;
+import com.example.demo.domain.StockRecord;
 import com.example.demo.repository.FetchRecordRepository;
+import com.example.demo.repository.StockRecordRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
@@ -14,6 +16,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -22,6 +25,8 @@ import static org.assertj.core.api.Assertions.*;
 public class Top50QueryTests {
     @Autowired
     private FetchRecordRepository fetchRecordRepository;
+    @Autowired
+    private StockRecordRepository stockRecordRepository;
 
     private FetchRecord fetchRecord(LocalDate stockRecordDate, LocalDateTime executionDateTime) {
         FetchRecord fetchRecord = new FetchRecord();
@@ -39,10 +44,37 @@ public class Top50QueryTests {
         return LocalDateTime.parse(s, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-//    @Test
-//    void getTop50StockRecordsTest() {
-//
-//    }
+    private List<StockRecord> stockRecords(LocalDate recordDate, int count) {
+        List<StockRecord> stockRecords = new ArrayList<>();
+        for (int i=0; i<count; i++) {
+            StockRecord stockRecord = new StockRecord();
+            ReflectionTestUtils.setField(stockRecord, "recordDate", recordDate);
+            ReflectionTestUtils.setField(stockRecord, "shortSellingRatio", (float) i);
+            stockRecords.add(stockRecord);
+        }
+        return stockRecords;
+    }
+
+    @Test
+    void getTop50StockRecordsTest() {
+        //given
+        int testRowNum = 3;
+        LocalDate stockRecordDate = localDate("2022-10-10");
+        stockRecordRepository.saveAll(stockRecords(stockRecordDate, testRowNum));
+
+        //when
+        List<StockRecord> stockRecords = stockRecordRepository
+                .findByRecordDateOrderByShortSellingRatioDesc(stockRecordDate, PageRequest.of(0, testRowNum));
+
+        //then
+        assertThat(stockRecords.size()).isEqualTo(testRowNum);
+        for (StockRecord stockRecord: stockRecords) {
+            assertThat(stockRecord.getRecordDate()).isEqualTo(stockRecordDate);
+        }
+        for (int i=1; i<stockRecords.size(); i++) {
+            assertThat(stockRecords.get(i-1).getShortSellingRatio()).isGreaterThan(stockRecords.get(i).getShortSellingRatio());
+        }
+    }
 
     @Test
     void getLatestFetchRecordTest() {
