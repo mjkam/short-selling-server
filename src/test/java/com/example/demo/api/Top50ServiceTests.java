@@ -1,5 +1,7 @@
 package com.example.demo.api;
 
+import com.example.demo.api.builder.FetchRecordBuilder;
+import com.example.demo.api.builder.StockRecordBuilder;
 import com.example.demo.domain.FetchRecord;
 import com.example.demo.domain.StockRecord;
 import com.example.demo.repository.FetchRecordRepository;
@@ -15,10 +17,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.demo.TimeUtils.localDate;
+import static com.example.demo.TimeUtils.localDateTime;
+import static com.example.demo.api.builder.FetchRecordBuilder.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -30,51 +34,33 @@ public class Top50ServiceTests {
     @Mock
     private StockRecordRepository stockRecordRepository;
 
-
-    private FetchRecord fetchRecord(LocalDate stockRecordDate, LocalDateTime executionDateTime) {
-        FetchRecord fetchRecord = new FetchRecord();
-        ReflectionTestUtils.setField(fetchRecord, "stockRecordDate", stockRecordDate);
-        ReflectionTestUtils.setField(fetchRecord, "executedDateTime", executionDateTime);
-
-        return fetchRecord;
-    }
-
-    private List<StockRecord> stockRecords(LocalDate recordDate, int count) {
-        List<StockRecord> stockRecords = new ArrayList<>();
-        for (int i=0; i<count; i++) {
-            StockRecord stockRecord = new StockRecord();
-            ReflectionTestUtils.setField(stockRecord, "recordDate", recordDate);
-            stockRecords.add(stockRecord);
-        }
-        return stockRecords;
-    }
-
-    private LocalDate localDate(String s) {
-        return LocalDate.parse(s, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
-
-    private LocalDateTime localDateTime(String s) {
-        return LocalDateTime.parse(s, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
     @Test
     void getTop50Test() {
         //given
-        int top50RecordNum = 50;
-        LocalDate stockRecordDate = localDate("2022-10-10");
-        LocalDateTime executionDateTime = localDateTime("2022-12-12 00:00:00");
-        FetchRecord fetchRecord = fetchRecord(stockRecordDate, executionDateTime);
+        FetchRecord fetchRecord = fetchRecord().stockRecordDate(localDate("2022-10-11")).build();
+        List<StockRecord> stockRecords = createStockRecords(localDate("2022-10-11"), 50);
 
         given(fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1))).willReturn(List.of(fetchRecord));
-        given(stockRecordRepository.findByRecordDateOrderByShortSellingRatioDesc(stockRecordDate, PageRequest.of(0, top50RecordNum))).willReturn(stockRecords(stockRecordDate, top50RecordNum));
+        given(stockRecordRepository.findByRecordDateOrderByShortSellingRatioDesc(localDate("2022-10-11"), PageRequest.of(0, 50)))
+                .willReturn(stockRecords);
         Top50Service top50Service = new Top50Service(fetchRecordRepository, stockRecordRepository);
 
         //when
         List<StockRecord> top50Records = top50Service.getTop50();
 
         //then
-        assertThat(top50Records.size()).isEqualTo(top50RecordNum);
-        assertThat(top50Records.get(0).getRecordDate()).isEqualTo(stockRecordDate);
+        assertThat(top50Records.size()).isEqualTo(50);
+        assertThat(top50Records.get(0).getRecordDate()).isEqualTo(localDate("2022-10-11"));
+    }
+
+    private List<StockRecord> createStockRecords(LocalDate recordDate, int count) {
+        List<StockRecord> result = new ArrayList<>();
+        for (int i=0; i<count; i++) {
+            result.add(StockRecordBuilder.stockRecord()
+                    .recordDate(recordDate)
+                    .shortSellingRatio((float) i).build());
+        }
+        return result;
     }
 
     @Test
@@ -93,13 +79,12 @@ public class Top50ServiceTests {
     @Test
     void throwExceptionWhenStockRecordListSizeIsNot50() {
         //given
-        int top50RecordNum = 50;
-        LocalDate stockRecordDate = localDate("2022-10-10");
-        LocalDateTime executionDateTime = localDateTime("2022-12-12 00:00:00");
-        FetchRecord fetchRecord = fetchRecord(stockRecordDate, executionDateTime);
+        FetchRecord fetchRecord = fetchRecord().stockRecordDate(localDate("2022-10-11")).build();
+        List<StockRecord> stockRecords = createStockRecords(localDate("2022-10-11"), 10);
 
         given(fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1))).willReturn(List.of(fetchRecord));
-        given(stockRecordRepository.findByRecordDateOrderByShortSellingRatioDesc(stockRecordDate, PageRequest.of(0, top50RecordNum))).willReturn(stockRecords(stockRecordDate, 1));
+        given(stockRecordRepository.findByRecordDateOrderByShortSellingRatioDesc(localDate("2022-10-11"), PageRequest.of(0, 50)))
+                .willReturn(stockRecords);
         Top50Service top50Service = new Top50Service(fetchRecordRepository, stockRecordRepository);
 
         //when

@@ -36,4 +36,21 @@ public class StockRecord {
 
     @Column(name = "short_selling_ratio")
     private Float shortSellingRatio;
+
+    public StockRecord(
+            long companyId,
+            LocalDate recordDate,
+            long shortSellingShareCount,
+            long listedShareCount,
+            long shortSellingAmount,
+            long listedShareAmount,
+            float shortSellingRatio) {
+        this.companyId = companyId;
+        this.recordDate = recordDate;
+        this.shortSellingShareCount = shortSellingShareCount;
+        this.listedShareCount = listedShareCount;
+        this.shortSellingAmount = shortSellingAmount;
+        this.listedShareAmount = listedShareAmount;
+        this.shortSellingRatio = shortSellingRatio;
+    }
 }

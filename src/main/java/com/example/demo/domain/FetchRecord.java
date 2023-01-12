@@ -23,6 +23,11 @@ public class FetchRecord {
     @Column(name = "executed_datetime")
     private LocalDateTime executedDateTime;
 
+    public FetchRecord(LocalDate stockRecordDate, LocalDateTime executedDateTime) {
+        this.stockRecordDate = stockRecordDate;
+        this.executedDateTime = executedDateTime;
+    }
+
     public LocalDate getStockRecordDate() {
         return this.stockRecordDate;
     }
