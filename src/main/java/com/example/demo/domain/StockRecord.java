@@ -16,8 +16,9 @@ public class StockRecord {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "company_id")
-    private Long companyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @Column(name = "record_date")
     private LocalDate recordDate;
@@ -38,14 +39,14 @@ public class StockRecord {
     private Float shortSellingRatio;
 
     public StockRecord(
-            long companyId,
+            Company company,
             LocalDate recordDate,
             long shortSellingShareCount,
             long listedShareCount,
             long shortSellingAmount,
             long listedShareAmount,
             float shortSellingRatio) {
-        this.companyId = companyId;
+        this.company = company;
         this.recordDate = recordDate;
         this.shortSellingShareCount = shortSellingShareCount;
         this.listedShareCount = listedShareCount;

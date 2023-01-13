@@ -1,11 +1,12 @@
 package com.example.demo.api.builder;
 
+import com.example.demo.domain.Company;
 import com.example.demo.domain.StockRecord;
 
 import java.time.LocalDate;
 
 public class StockRecordBuilder {
-    private Long companyId = 1L;
+    private Company company;
     private LocalDate recordDate;
     private Long shortSellingShareCount = 0L;
     private Long listedShareCount = 0L;
@@ -17,6 +18,11 @@ public class StockRecordBuilder {
 
     public static StockRecordBuilder stockRecord() {
         return new StockRecordBuilder();
+    }
+
+    public StockRecordBuilder company(Company company) {
+        this.company = company;
+        return this;
     }
 
     public StockRecordBuilder recordDate(LocalDate localDate) {
@@ -31,7 +37,7 @@ public class StockRecordBuilder {
 
     public StockRecord build() {
         return new StockRecord(
-                this.companyId,
+                this.company,
                 this.recordDate,
                 this.shortSellingShareCount,
                 this.listedShareCount,
