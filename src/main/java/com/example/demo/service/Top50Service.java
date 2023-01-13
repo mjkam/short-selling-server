@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class Top50Service {
     private final FetchRecordRepository fetchRecordRepository;
     private final StockRecordRepository stockRecordRepository;

@@ -1,6 +1,5 @@
 package com.example.demo.api;
 
-import com.example.demo.api.builder.FetchRecordBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
 import com.example.demo.domain.FetchRecord;
 import com.example.demo.domain.StockRecord;
@@ -12,17 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.TimeUtils.localDate;
-import static com.example.demo.TimeUtils.localDateTime;
-import static com.example.demo.api.builder.FetchRecordBuilder.*;
+import static com.example.demo.api.builder.FetchRecordBuilder.fetchRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
