@@ -1,9 +1,12 @@
 package com.example.demo.api;
 
+import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.FetchRecordBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
+import com.example.demo.domain.Company;
 import com.example.demo.domain.FetchRecord;
 import com.example.demo.domain.StockRecord;
+import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.FetchRecordRepository;
 import com.example.demo.repository.StockRecordRepository;
 import org.junit.jupiter.api.Test;
@@ -28,24 +31,33 @@ public class Top50QueryTests {
     private FetchRecordRepository fetchRecordRepository;
     @Autowired
     private StockRecordRepository stockRecordRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
+
 
 
     @Test
     void getStockRecordsQueryTest() {
         //given
+        Company company = companyRepository.save(CompanyBuilder.company().build());
+
         stockRecordRepository.save(StockRecordBuilder.stockRecord()
+                .company(company)
                 .recordDate(localDate("2022-10-10"))
                 .shortSellingRatio(1.0f)
                 .build());
         stockRecordRepository.save(StockRecordBuilder.stockRecord()
+                .company(company)
                 .recordDate(localDate("2022-10-11"))
                 .shortSellingRatio(2.0f)
                 .build());
         stockRecordRepository.save(StockRecordBuilder.stockRecord()
+                .company(company)
                 .recordDate(localDate("2022-10-11"))
                 .shortSellingRatio(3.0f)
                 .build());
         stockRecordRepository.save(StockRecordBuilder.stockRecord()
+                .company(company)
                 .recordDate(localDate("2022-10-11"))
                 .shortSellingRatio(4.0f)
                 .build());
