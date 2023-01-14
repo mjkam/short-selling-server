@@ -1,8 +1,10 @@
 package com.example.demo.cron;
 
+import com.example.demo.domain.MarketType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,9 +20,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class KRXApi {
-    public List<KRXStockRecord> getStockRecordsAt(LocalDate localDate) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public List<KRXStockRecord> getStockRecordsAt(LocalDate localDate, MarketType marketType) throws JsonProcessingException {
+//        RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -28,7 +33,7 @@ public class KRXApi {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("bld", "dbms/MDC/STAT/srt/MDCSTAT30501");
         body.add("trdDd", localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        body.add("mktTpCd", "1");
+        body.add("mktTpCd", String.valueOf(marketType.getMarketNum()));
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, headers);
 

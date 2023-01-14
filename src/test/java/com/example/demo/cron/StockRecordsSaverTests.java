@@ -43,6 +43,7 @@ public class StockRecordsSaverTests {
     @Test
     void saveStockRecords() throws JsonProcessingException {
         //given
+        System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
         StockRecordsSaver stockRecordsSaver = new StockRecordsSaver(
                 companyRepository, stockRecordRepository, fetchRecordRepository, krxApi
         );
