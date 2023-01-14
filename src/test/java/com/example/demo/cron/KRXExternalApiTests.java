@@ -1,8 +1,6 @@
-package com.example.demo.scheduler;
+package com.example.demo.cron;
 
 import com.example.demo.TimeUtils;
-import com.example.demo.cron.KRXApi;
-import com.example.demo.cron.KRXStockRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
