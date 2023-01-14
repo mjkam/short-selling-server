@@ -7,7 +7,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class CompanyBuilder {
     private Long id;
     private String companyCode = "";
-    private String stockCode = "";
     private String name = "";
     private MarketType marketType = MarketType.KOSPI;
     private String logoImageName = "";
@@ -18,6 +17,11 @@ public class CompanyBuilder {
         return new CompanyBuilder();
     }
 
+    public CompanyBuilder companyCode(String companyCode) {
+        this.companyCode = companyCode;
+        return this;
+    }
+
     public CompanyBuilder logoImageName(String s) {
         this.logoImageName = s;
         return this;
@@ -25,6 +29,9 @@ public class CompanyBuilder {
 
     public Company build() {
         Company company = new Company();
+        ReflectionTestUtils.setField(company, "companyCode", this.companyCode);
+        ReflectionTestUtils.setField(company, "name", this.name);
+        ReflectionTestUtils.setField(company, "marketType", this.marketType);
         ReflectionTestUtils.setField(company, "logoImageName", this.logoImageName);
 
         return company;

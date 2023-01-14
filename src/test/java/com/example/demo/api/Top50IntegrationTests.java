@@ -89,7 +89,7 @@ public class Top50IntegrationTests {
     private List<Company> createCompanies() {
         List<Company> companies = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            companies.add(CompanyBuilder.company().logoImageName(String.valueOf(i)).build());
+            companies.add(CompanyBuilder.company().companyCode(String.valueOf(i)).logoImageName(String.valueOf(i)).build());
         }
         return companies;
     }
