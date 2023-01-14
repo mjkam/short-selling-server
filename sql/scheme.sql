@@ -1,18 +1,16 @@
-CREATE DATABASE IF NOT EXISTS tdd;
-
+DROP DATABASE tdd;
+CREATE DATABASE IF NOT EXISTS tdd default character set utf8 collate utf8_general_ci;
 use tdd;
 
 CREATE TABLE company
 (
     id              bigint AUTO_INCREMENT,
     company_code    varchar(200),
-    stock_code      varchar(200),
     name            varchar(200),
     market_type     varchar(100),
     logo_image_name varchar(200),
     PRIMARY KEY (id),
-    UNIQUE (company_code),
-    UNIQUE (stock_code)
+    UNIQUE (company_code)
 )
 
 DROP TABLE IF EXISTS fetch_record;

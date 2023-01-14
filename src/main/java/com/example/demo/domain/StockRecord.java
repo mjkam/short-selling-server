@@ -1,10 +1,14 @@
 package com.example.demo.domain;
 
+import com.example.demo.cron.KRXStockRecord;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Locale;
 
 @Entity
 @Table(name = "stock_record")
@@ -53,5 +57,15 @@ public class StockRecord {
         this.shortSellingAmount = shortSellingAmount;
         this.listedShareAmount = listedShareAmount;
         this.shortSellingRatio = shortSellingRatio;
+    }
+
+    public StockRecord(Company company, KRXStockRecord krxStockRecord, LocalDate recordDate) {
+        this.company = company;
+        this.recordDate = recordDate;
+        this.shortSellingShareCount = krxStockRecord.getShortSellingShareCount();
+        this.listedShareCount = krxStockRecord.getListedShareCount();
+        this.shortSellingAmount = krxStockRecord.getShortSellingAmount();
+        this.listedShareAmount = krxStockRecord.getListedShareAmount();
+        this.shortSellingRatio = krxStockRecord.getShortSellingShareRatio();
     }
 }
