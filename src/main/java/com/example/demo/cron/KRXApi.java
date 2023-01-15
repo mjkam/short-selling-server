@@ -4,6 +4,8 @@ import com.example.demo.domain.MarketType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,10 +25,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KRXApi {
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public List<KRXStockRecord> getStockRecordsAt(LocalDate localDate, MarketType marketType) throws JsonProcessingException {
-//        RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -42,8 +43,18 @@ public class KRXApi {
                 httpEntity,
                 String.class
         );
-        ObjectMapper objectMapper = new ObjectMapper();
         GetKRXStockRecordsResponse getKRXStockRecordsResponse = objectMapper.readValue(response.getBody(), GetKRXStockRecordsResponse.class);
         return getKRXStockRecordsResponse.getRecords();
+    }
+
+    static class GetKRXStockRecordsResponse {
+        @JsonProperty("OutBlock_1")
+        private List<KRXStockRecord> records;
+        @JsonProperty("CURRENT_DATETIME")
+        private String serverDateTimeStr;
+
+        public List<KRXStockRecord> getRecords() {
+            return this.records;
+        }
     }
 }

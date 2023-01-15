@@ -3,6 +3,7 @@ package com.example.demo.cron;
 import com.example.demo.TimeUtils;
 import com.example.demo.domain.MarketType;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,7 +16,7 @@ public class KRXExternalApiTests {
     @Test
     void getStockRecordsAtSpecificDate() throws JsonProcessingException {
         //given
-        KRXApi krxApi = new KRXApi(new RestTemplate());
+        KRXApi krxApi = new KRXApi(new RestTemplate(), new ObjectMapper());
         System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
 
         //when
