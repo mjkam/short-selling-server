@@ -31,4 +31,7 @@ public class FetchRecord {
     public LocalDate getStockRecordDate() {
         return this.stockRecordDate;
     }
+    public LocalDate getNextStockRecordDate() {
+        return this.stockRecordDate.plusDays(1);
+    }
 }
