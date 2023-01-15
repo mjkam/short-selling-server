@@ -12,4 +12,7 @@ import java.util.List;
 public interface StockRecordRepository extends JpaRepository<StockRecord, Long> {
     @Query("SELECT m FROM StockRecord m JOIN FETCH m.company WHERE m.recordDate = :recordDate ORDER BY m.shortSellingRatio DESC")
     List<StockRecord> findByRecordDateOrderByShortSellingRatioDesc(@Param("recordDate") LocalDate recordDate, Pageable pageable);
+
+    @Query("SELECT m FROM StockRecord m JOIN FETCH m.company WHERE m.company.companyCode = :companyCode AND m.recordDate >= :recordDate ORDER BY m.recordDate ASC")
+    List<StockRecord> findByRecordDateOrderByRecordDateASC(@Param("companyCode") String companyCode, @Param("recordDate") LocalDate localDate);
 }

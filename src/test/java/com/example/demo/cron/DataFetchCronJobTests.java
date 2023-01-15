@@ -1,5 +1,6 @@
 package com.example.demo.cron;
 
+import com.example.demo.MockTimeManager;
 import com.example.demo.TimeManager;
 import com.example.demo.TimeUtils;
 import com.example.demo.domain.FetchRecord;
@@ -51,7 +52,7 @@ public class DataFetchCronJobTests {
         dataFetchCronJob = new DataFetchCronJob(
             stockRecordsSaver,
             fetchRecordRepository,
-            new MockTimeManager()
+            new MockTimeManager(localDate("2022-10-13"))
         );
         FetchRecord fetchRecord = fetchRecord()
                 .stockRecordDate(localDate("2022-10-12"))
@@ -78,12 +79,5 @@ public class DataFetchCronJobTests {
         boolean b = all.stream()
                 .anyMatch(o -> o.getRecordDate().equals(localDate));
         assertThat(b).isTrue();
-    }
-
-    private static class MockTimeManager extends TimeManager {
-        @Override
-        public LocalDate getCurrentDate() {
-            return TimeUtils.localDate("2022-10-13");
-        }
     }
 }
