@@ -37,7 +37,6 @@ public class DataFetchCronJobTests {
 
     private DataFetchCronJob dataFetchCronJob;
 
-    @AfterEach
     @BeforeEach
     void setup() {
         System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
@@ -65,6 +64,25 @@ public class DataFetchCronJobTests {
         //then
         assertFetchRecordSavedAt(localDate("2022-10-13"));
         assertStockRecordsSavedAt(localDate("2022-10-13"));
+    }
+
+    @Test
+    void whenNoFetchRecord_thenFetchStartAtInitialDate() throws JsonProcessingException {
+        //given
+        dataFetchCronJob = new DataFetchCronJob(
+                stockRecordsSaver,
+                fetchRecordRepository,
+                new MockTimeManager(localDate("2022-06-03"))
+        );
+
+        //when
+        dataFetchCronJob.fetch();
+
+        //then
+        assertFetchRecordSavedAt(localDate("2022-06-02"));
+        assertFetchRecordSavedAt(localDate("2022-06-03"));
+//        assertFetchRecordSavedAt(localDate("2022-10-13"));
+//        assertStockRecordsSavedAt(localDate("2022-10-13"));
     }
 
     private void assertFetchRecordSavedAt(LocalDate localDate) {
