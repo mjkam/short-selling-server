@@ -37,3 +37,12 @@ CREATE TABLE stock_record
     PRIMARY KEY (id),
     UNIQUE (company_id, record_date)
 )
+
+CREATE TABLE favorite_record
+(
+    id           bigint AUTO_INCREMENT,
+    company_code varchar(100),
+    count        bigint,
+    PRIMARY KEY (id),
+    UNIQUE (company_code)
+)
