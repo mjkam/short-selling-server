@@ -39,7 +39,6 @@ public class DataFetchCronJobTests {
 
     @BeforeEach
     void setup() {
-        System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
         fetchRecordRepository.deleteAll();
         stockRecordRepository.deleteAll();
         companyRepository.deleteAll();

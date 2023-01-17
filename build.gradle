@@ -26,5 +26,6 @@ dependencies {
 }
 
 tasks.named('test') {
+	jvmArgs '-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2'
 	useJUnitPlatform()
 }

@@ -25,7 +25,7 @@ public class DataFetchCronJob {
             @Scheduled(cron = "0 0 * * * *"),
     })
     public void fetch() throws JsonProcessingException {
-        System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
+//        System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
         FetchRecord fetchRecord = fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1)).stream()
                 .findAny()
                 .orElse(null);

@@ -17,7 +17,6 @@ public class KRXExternalApiTests {
     void getStockRecordsAtSpecificDate() throws JsonProcessingException {
         //given
         KRXApi krxApi = new KRXApi(new RestTemplate(), new ObjectMapper());
-        System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
 
         //when
         List<KRXStockRecord> kospiResult = krxApi.getStockRecordsAt(TimeUtils.localDate("2022-10-12"), MarketType.KOSPI);
