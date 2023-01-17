@@ -24,13 +24,13 @@ public class GetTop50Response {
     @NoArgsConstructor
     @Getter
     public static class Top50ListItem {
-        private Long companyId;
+        private String companyCode;
         private String companyName;
         private String logoImageUrl;
         private Float shortSellingRatio;
 
         public Top50ListItem(StockRecord stockRecord) {
-            this.companyId = stockRecord.getCompany().getId();
+            this.companyCode = stockRecord.getCompany().getCompanyCode();
             this.companyName = stockRecord.getCompany().getName();
             this.logoImageUrl = stockRecord.getCompany().getLogoImageName();
             this.shortSellingRatio = stockRecord.getShortSellingRatio();
