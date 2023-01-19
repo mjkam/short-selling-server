@@ -1,5 +1,6 @@
 package com.example.demo.cron;
 
+import com.example.demo.MockDataFetchProperties;
 import com.example.demo.MockTimeManager;
 import com.example.demo.TimeManager;
 import com.example.demo.TimeUtils;
@@ -48,9 +49,10 @@ public class DataFetchCronJobTests {
     void fetchDataTest() throws JsonProcessingException {
         //given
         dataFetchCronJob = new DataFetchCronJob(
-            stockRecordsSaver,
-            fetchRecordRepository,
-            new MockTimeManager(localDate("2022-10-13"))
+                stockRecordsSaver,
+                fetchRecordRepository,
+                new MockTimeManager(localDate("2022-10-13")),
+                new MockDataFetchProperties(localDate("2000-01-01"))
         );
         FetchRecord fetchRecord = fetchRecord()
                 .stockRecordDate(localDate("2022-10-12"))
@@ -66,22 +68,25 @@ public class DataFetchCronJobTests {
     }
 
     @Test
-    void whenNoFetchRecord_thenFetchStartAtInitialDate() throws JsonProcessingException {
+    void whenNoFetchRecord_thenFetchStartAtInitialDate() {
         //given
+        LocalDate now = localDate("2022-06-10");
+        LocalDate fetchStartDate = localDate("2022-06-08");
+
         dataFetchCronJob = new DataFetchCronJob(
                 stockRecordsSaver,
                 fetchRecordRepository,
-                new MockTimeManager(localDate("2022-06-03"))
+                new MockTimeManager(now),
+                new MockDataFetchProperties(fetchStartDate)
         );
 
         //when
         dataFetchCronJob.fetch();
 
         //then
-        assertFetchRecordSavedAt(localDate("2022-06-02"));
-        assertFetchRecordSavedAt(localDate("2022-06-03"));
-//        assertFetchRecordSavedAt(localDate("2022-10-13"));
-//        assertStockRecordsSavedAt(localDate("2022-10-13"));
+        assertFetchRecordSavedAt(localDate("2022-06-08"));
+        assertFetchRecordSavedAt(localDate("2022-06-09"));
+        assertFetchRecordSavedAt(localDate("2022-06-10"));
     }
 
     private void assertFetchRecordSavedAt(LocalDate localDate) {

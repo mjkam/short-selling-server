@@ -28,7 +28,7 @@ public class StockRecordsSaver {
 
 
     @Transactional
-    public void save(LocalDate searchDate) throws JsonProcessingException {
+    public void save(LocalDate searchDate) {
         List<KRXStockRecord> kospiRecords = krxApi.getStockRecordsAt(searchDate, MarketType.KOSPI);
         List<KRXStockRecord> kosdaqRecords = krxApi.getStockRecordsAt(searchDate, MarketType.KOSDAQ);
         List<KRXStockRecord> krxStockRecords = new ArrayList<>();
