@@ -1,6 +1,5 @@
 package com.example.demo.api;
 
-import com.example.demo.MockTimeManager;
 import com.example.demo.TimeManager;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
@@ -17,9 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;

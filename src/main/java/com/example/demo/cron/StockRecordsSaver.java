@@ -1,13 +1,9 @@
 package com.example.demo.cron;
 
-import com.example.demo.domain.Company;
-import com.example.demo.domain.FetchRecord;
-import com.example.demo.domain.MarketType;
-import com.example.demo.domain.StockRecord;
+import com.example.demo.domain.*;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.FetchRecordRepository;
 import com.example.demo.repository.StockRecordRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

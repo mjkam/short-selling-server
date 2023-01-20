@@ -1,8 +1,10 @@
 package com.example.demo.api;
 
 import com.example.demo.api.builder.CompanyBuilder;
+import com.example.demo.controller.dto.CompanyDto;
 import com.example.demo.controller.dto.GetCompaniesResponse;
 import com.example.demo.domain.Company;
+import com.example.demo.domain.MarketType;
 import com.example.demo.repository.CompanyRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -15,10 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,35 +32,56 @@ public class CompanyIntegrationTests {
     @Autowired
     private CompanyRepository companyRepository;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private CompanyBuilder companyBuilder;
 
-    @AfterEach
     @BeforeEach
     void setup() {
+        companyRepository.deleteAll();
+
+        companyBuilder = CompanyBuilder.company()
+                .name("")
+                .logoImageName("")
+                .marketType(MarketType.KOSPI);
+    }
+
+    @AfterEach
+    void teardown() {
         companyRepository.deleteAll();
     }
 
     @Test
     void getAllCompanies() throws Exception {
         //given
-        Company company1 = CompanyBuilder.company()
-                .companyCode("1")
-                .logoImageName("")
-                .build();
-        Company company2 = CompanyBuilder.company()
-                .companyCode("2")
-                .logoImageName("")
-                .build();
-        companyRepository.saveAll(List.of(company1, company2));
+        companyRepository.save(company(1L, "company1"));
+        companyRepository.save(company(2L, "company2"));
 
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/companies"))
-                .andReturn()
-                .getResponse();
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
 
         //then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        GetCompaniesResponse getCompaniesResponse = objectMapper.readValue(response.getContentAsString(), GetCompaniesResponse.class);
-        assertThat(getCompaniesResponse.getCompanies().size()).isEqualTo(2);
+        List<CompanyDto> companies = objectMapper.readValue(response.getContentAsString(), GetCompaniesResponse.class).getCompanies();
+        assertThat(companies.size()).isEqualTo(2);
+        assertContainsCompanyCodes(companies, List.of("company1", "company2"));
+    }
+
+    private Company company(long id, String companyCode) {
+        return companyBuilder.but()
+                .id(id)
+                .companyCode(companyCode)
+                .build();
+    }
+
+    private void assertContainsCompanyCodes(List<CompanyDto> companies, List<String> companyCodes) {
+        companies.forEach(o -> System.out.println(o.getCompanyCode()));
+        boolean existCompanyCodesInCompanies = companies.stream()
+                .allMatch(company -> companyCodes.contains(company.getCompanyCode()));
+        assertThat(existCompanyCodesInCompanies).isTrue();
     }
 }
+
+
+
+

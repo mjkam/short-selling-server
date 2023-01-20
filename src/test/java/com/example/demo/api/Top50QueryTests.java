@@ -1,7 +1,6 @@
 package com.example.demo.api;
 
 import com.example.demo.api.builder.CompanyBuilder;
-import com.example.demo.api.builder.FetchRecordBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
 import com.example.demo.domain.Company;
 import com.example.demo.domain.FetchRecord;
@@ -13,12 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.TimeUtils.localDate;
