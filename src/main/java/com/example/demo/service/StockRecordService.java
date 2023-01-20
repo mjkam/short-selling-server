@@ -17,6 +17,6 @@ public class StockRecordService {
 
     public List<StockRecord> getStockRecords(String companyCode, int duration) {
         return stockRecordRepository
-                .findByRecordDateOrderByRecordDateASC(companyCode, timeManager.getCurrentDate().minusDays(duration));
+                .findByRecordDateOrderByRecordDateDesc(companyCode, timeManager.getCurrentDate().minusDays(duration));
     }
 }
