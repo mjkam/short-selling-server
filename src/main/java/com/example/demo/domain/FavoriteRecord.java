@@ -19,11 +19,11 @@ public class FavoriteRecord {
     private String companyCode;
 
     @Column(name = "count")
-    private Long count;
+    private Integer count;
 
     public FavoriteRecord(String companyCode) {
         this.companyCode = companyCode;
-        this.count = 0L;
+        this.count = 0;
     }
 
     public void incrementCount() {

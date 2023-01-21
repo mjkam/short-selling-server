@@ -42,7 +42,7 @@ CREATE TABLE favorite_record
 (
     id           bigint AUTO_INCREMENT,
     company_code varchar(10),
-    count        bigint,
+    count        int,
     PRIMARY KEY (id),
     UNIQUE (company_code)
 )
