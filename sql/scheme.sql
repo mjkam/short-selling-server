@@ -5,7 +5,7 @@ use tdd;
 CREATE TABLE company
 (
     id              bigint AUTO_INCREMENT,
-    company_code    varchar(200),
+    company_code    varchar(10),
     name            varchar(200),
     market_type     varchar(100),
     logo_image_name varchar(200),
@@ -41,7 +41,7 @@ CREATE TABLE stock_record
 CREATE TABLE favorite_record
 (
     id           bigint AUTO_INCREMENT,
-    company_code varchar(100),
+    company_code varchar(10),
     count        bigint,
     PRIMARY KEY (id),
     UNIQUE (company_code)
