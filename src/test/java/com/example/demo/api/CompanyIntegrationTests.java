@@ -53,8 +53,8 @@ public class CompanyIntegrationTests {
     @Test
     void getAllCompanies() throws Exception {
         //given
-        companyRepository.save(company(1L, "company1"));
-        companyRepository.save(company(2L, "company2"));
+        companyRepository.save(company("company1"));
+        companyRepository.save(company("company2"));
 
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/companies"))
@@ -67,9 +67,8 @@ public class CompanyIntegrationTests {
         assertContainsCompanyCodes(companies, List.of("company1", "company2"));
     }
 
-    private Company company(long id, String companyCode) {
+    private Company company(String companyCode) {
         return companyBuilder.but()
-                .id(id)
                 .companyCode(companyCode)
                 .build();
     }
