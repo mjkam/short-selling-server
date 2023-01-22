@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -27,6 +28,15 @@ public class GlobalControllerAdvice {
         String errorMessage = ex.getFieldError() != null ?
                 getMessageFromCodes(ex.getFieldError()) : ex.getMessage();
         log.info(errorMessage);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionResponse(ExceptionCode.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        log.info(ex.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
