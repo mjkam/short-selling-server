@@ -34,38 +34,30 @@ public class KRXStockRecord {
     }
 
     public long getShortSellingShareCount() {
-        try {
-            return NumberFormat.getNumberInstance(Locale.US).parse(this.shortSellingShareCount).longValue();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return changeStringToLong(this.shortSellingShareCount);
     }
 
     public long getListedShareCount() {
-        try {
-            return NumberFormat.getNumberInstance(Locale.US).parse(this.listedShareCount).longValue();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return changeStringToLong(this.listedShareCount);
     }
 
     public long getShortSellingAmount() {
-        try {
-            return NumberFormat.getNumberInstance(Locale.US).parse(this.shortSellingAmount).longValue();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return changeStringToLong(this.shortSellingAmount);
     }
 
     public long getListedShareAmount() {
-        try {
-            return NumberFormat.getNumberInstance(Locale.US).parse(this.listedShareAmount).longValue();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return changeStringToLong(this.listedShareAmount);
     }
 
     public float getShortSellingShareRatio() {
         return Float.parseFloat(this.shortSellingShareRatio);
+    }
+
+    private long changeStringToLong(String s) {
+        try {
+            return NumberFormat.getNumberInstance(Locale.US).parse(s).longValue();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
