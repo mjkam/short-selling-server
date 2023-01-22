@@ -23,7 +23,7 @@ public class Top50Service {
     public List<StockRecord> getTop50() {
         FetchRecord lastestFetchRecord = fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1)).stream()
                 .findAny()
-                .orElseThrow(() -> new EntityNotFoundException("FetchRecord not found"));
+                .orElseThrow(() -> new IllegalStateException("FetchRecord not found"));
         List<StockRecord> top50 = stockRecordRepository
                 .findByRecordDateOrderByShortSellingRatioDesc(lastestFetchRecord.getStockRecordDate(), PageRequest.of(0, 50));
         if (top50.size() != 50) {
