@@ -13,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +22,7 @@ import java.util.List;
 
 import static com.example.demo.TimeUtils.localDate;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 public class StockRecordsSaverTests {
@@ -82,46 +81,6 @@ public class StockRecordsSaverTests {
         stockRecordRepository.deleteAll();
         fetchRecordRepository.deleteAll();
     }
-
-
-//    @Test
-//    @DisplayName("가져온 KRXStockRecord 를 StockRecord 로 저장")
-//    void saveStockRecordsFromKRXStockRecords() {
-//        //given
-//        LocalDate givenDate = localDate("2022-10-12");
-//
-//        String companyCode1 = "000001";
-//        KRXStockRecord krxStockRecord1 = KRXStockRecordBuilder.krxStockRecord().companyName("")
-//                .companyCode(companyCode1)
-//                .shortSellingShareCount("1,111")
-//                .shortSellingAmount("1,111")
-//                .listedShareCount("1,111")
-//                .listedShareAmount("1,111")
-//                .shortSellingShareRatio("1.11")
-//                .build();
-//        String companyCode2 = "000002";
-//        KRXStockRecord krxStockRecord2 = KRXStockRecordBuilder.krxStockRecord().companyName("")
-//                .companyCode(companyCode2)
-//                .shortSellingShareCount("2,222")
-//                .shortSellingAmount("2,222")
-//                .listedShareCount("2,222")
-//                .listedShareAmount("2,222")
-//                .shortSellingShareRatio("2.22")
-//                .build();
-//
-//        given(krxApi.getStockRecordsAt(givenDate, MarketType.KOSPI))
-//                .willReturn(List.of(krxStockRecord1));
-//        given(krxApi.getStockRecordsAt(givenDate, MarketType.KOSPI))
-//                .willReturn(List.of(krxStockRecord2));
-//
-//        //when
-//        sut.save(givenDate);
-//
-//        //then
-//        List<FetchRecord> allFetchRecords = fetchRecordRepository.findAll();
-//        assertThat(allFetchRecords.size()).isEqualTo(1);
-//        assertThat(allFetchRecords.get(0).getStockRecordDate()).isEqualTo(givenDate);
-//    }
 
     @Test
     @DisplayName("가져온 KRXStockRecord 를 StockRecord 로 저장")
