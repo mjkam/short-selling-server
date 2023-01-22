@@ -1,5 +1,6 @@
 package com.example.demo.api.builder;
 
+import com.example.demo.TimeUtils;
 import com.example.demo.domain.FetchRecord;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 public final class FetchRecordBuilder {
     private Long id;
     private LocalDate stockRecordDate;
-    private LocalDateTime executedDateTime;
+    private LocalDateTime executedDateTime = TimeUtils.localDateTime("2022-10-10 00:00:00");
 
     private FetchRecordBuilder() {
     }
@@ -28,13 +29,8 @@ public final class FetchRecordBuilder {
         return this;
     }
 
-    public FetchRecordBuilder executedDateTime(LocalDateTime executedDateTime) {
-        this.executedDateTime = executedDateTime;
-        return this;
-    }
-
     public FetchRecordBuilder but() {
-        return fetchRecord().id(id).stockRecordDate(stockRecordDate).executedDateTime(executedDateTime);
+        return fetchRecord().id(id).stockRecordDate(stockRecordDate);
     }
 
     public FetchRecord build() {

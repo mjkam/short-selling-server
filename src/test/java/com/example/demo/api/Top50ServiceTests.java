@@ -40,8 +40,6 @@ public class Top50ServiceTests {
 
     private StockRecordBuilder stockRecordBuilder;
     private CompanyBuilder companyBuilder;
-    private FetchRecordBuilder fetchRecordBuilder;
-
 
     @BeforeEach
     void setup() {
@@ -59,8 +57,6 @@ public class Top50ServiceTests {
                 .name("")
                 .logoImageName("")
                 .marketType(MarketType.KOSPI);
-        fetchRecordBuilder = FetchRecordBuilder.fetchRecord()
-                .executedDateTime(localDateTime("2022-10-13 00:00:00"));
     }
 
     @AfterEach
@@ -113,7 +109,7 @@ public class Top50ServiceTests {
     }
 
     private FetchRecord saveFetchRecord(LocalDate localDate) {
-        return fetchRecordRepository.save(fetchRecordBuilder.but()
+        return fetchRecordRepository.save(FetchRecordBuilder.fetchRecord()
                 .stockRecordDate(localDate)
                 .build());
     }
