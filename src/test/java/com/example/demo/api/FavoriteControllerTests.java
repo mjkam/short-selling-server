@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.BaseControllerTest;
 import com.example.demo.controller.FavoriteController;
 import com.example.demo.controller.dto.RegisterFavoriteRequest;
 import com.example.demo.exception.ExceptionCode;
@@ -28,14 +29,12 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @WebMvcTest(FavoriteController.class)
-public class FavoriteControllerTests {
+public class FavoriteControllerTests extends BaseControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private FavoriteService favoriteService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static Stream<String> invalidCompanyCodes() {
         return Stream.of(null, "", "123456789AA", "111111111111", "aa", "12345");

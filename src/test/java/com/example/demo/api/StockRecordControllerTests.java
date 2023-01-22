@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.BaseControllerTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
 import com.example.demo.controller.StockRecordController;
@@ -37,13 +38,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StockRecordController.class)
-public class StockRecordControllerTests {
+public class StockRecordControllerTests extends BaseControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private StockRecordService stockRecordService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private CompanyBuilder companyBuilder;
     private StockRecordBuilder stockRecordBuilder;
