@@ -23,7 +23,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static com.example.demo.TimeUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 @WebMvcTest(Top50Controller.class)
 public class Top50ControllerTests extends BaseControllerTest {
@@ -38,7 +42,6 @@ public class Top50ControllerTests extends BaseControllerTest {
     @BeforeEach
     void setup() {
         stockRecordBuilder = StockRecordBuilder.stockRecord()
-                .recordDate(TimeUtils.localDate("2022-10-10"))
                 .listedShareCount(0L)
                 .shortSellingAmount(0L)
                 .shortSellingShareCount(0L)
@@ -56,8 +59,9 @@ public class Top50ControllerTests extends BaseControllerTest {
                 .build();
     }
 
-    private StockRecord stockRecord(Company company) {
+    private StockRecord stockRecord(Company company, LocalDate localDate) {
         return stockRecordBuilder.but()
+                .recordDate(localDate)
                 .company(company)
                 .build();
     }
@@ -69,8 +73,8 @@ public class Top50ControllerTests extends BaseControllerTest {
         Company company1 = company("000001");
         Company company2 = company("000002");
 
-        StockRecord stockRecord1 = stockRecord(company1);
-        StockRecord stockRecord2 = stockRecord(company2);
+        StockRecord stockRecord1 = stockRecord(company1, localDate("2022-10-13"));
+        StockRecord stockRecord2 = stockRecord(company2, localDate("2022-10-13"));
 
         BDDMockito.given(top50Service.getTop50())
                 .willReturn(List.of(stockRecord1, stockRecord2));
@@ -81,9 +85,10 @@ public class Top50ControllerTests extends BaseControllerTest {
                 .andReturn().getResponse();
 
         //then
-        List<GetTop50Response.Top50ListItem> top50Records = objectMapper.readValue(response.getContentAsString(), GetTop50Response.class).getTop50Records();
-        Assertions.assertThat(top50Records.get(0).getCompanyCode()).isEqualTo("000001");
-        Assertions.assertThat(top50Records.get(1).getCompanyCode()).isEqualTo("000002");
+        GetTop50Response getTop50Response = objectMapper.readValue(response.getContentAsString(), GetTop50Response.class);
+        List<GetTop50Response.Top50ListItem> top50Records = getTop50Response.getTop50Records();
+        assertThat(top50Records.get(0).getCompanyCode()).isEqualTo("000001");
+        assertThat(top50Records.get(1).getCompanyCode()).isEqualTo("000002");
+        assertThat(getTop50Response.getRecordDate()).isEqualTo(localDate("2022-10-13").toString());
     }
-
 }
