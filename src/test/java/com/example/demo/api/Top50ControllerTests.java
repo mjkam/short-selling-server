@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.example.demo.TimeUtils.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 @WebMvcTest(Top50Controller.class)
 public class Top50ControllerTests extends BaseControllerTest {
@@ -76,8 +77,8 @@ public class Top50ControllerTests extends BaseControllerTest {
         StockRecord stockRecord1 = stockRecord(company1, localDate("2022-10-13"));
         StockRecord stockRecord2 = stockRecord(company2, localDate("2022-10-13"));
 
-        BDDMockito.given(top50Service.getTop50())
-                .willReturn(List.of(stockRecord1, stockRecord2));
+        given(top50Service.getTop50()).willReturn(List.of(stockRecord1, stockRecord2));
+
 
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/top50"))
