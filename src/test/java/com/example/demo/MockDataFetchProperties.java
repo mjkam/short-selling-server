@@ -11,6 +11,10 @@ public class MockDataFetchProperties extends DataFetchProperties {
         this.fixedDate = localDate;
     }
 
+    public MockDataFetchProperties() {
+        this.fixedDate = TimeUtils.localDate("2000-01-01");
+    }
+
     @Override
     public LocalDate getFetchStartDate() {
         return this.fixedDate;

@@ -30,7 +30,8 @@ public class DataFetchCronJob {
         FetchRecord fetchRecord = fetchRecordRepository.findByOrderByStockRecordDateDesc(PageRequest.of(0, 1)).stream()
                 .findAny()
                 .orElse(null);
-        LocalDate searchDate = fetchRecord != null ? fetchRecord.getNextStockRecordDate() : dataFetchProperties.getFetchStartDate();
+        LocalDate searchDate = fetchRecord != null ?
+                fetchRecord.getNextStockRecordDate() : dataFetchProperties.getFetchStartDate();
         LocalDate searchEndDate = timeManager.getCurrentDate();
 
         while (searchDate.isBefore(searchEndDate) || searchDate.isEqual(searchEndDate)) {

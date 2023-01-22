@@ -1,105 +1,101 @@
 package com.example.demo.cron;
 
 import com.example.demo.MockDataFetchProperties;
+import com.example.demo.MockStockRecordSaver;
 import com.example.demo.MockTimeManager;
-import com.example.demo.TimeManager;
-import com.example.demo.TimeUtils;
-import com.example.demo.domain.FetchRecord;
-import com.example.demo.domain.StockRecord;
-import com.example.demo.repository.CompanyRepository;
+import com.example.demo.api.builder.FetchRecordBuilder;
 import com.example.demo.repository.FetchRecordRepository;
-import com.example.demo.repository.StockRecordRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.example.demo.TimeUtils.localDate;
-import static com.example.demo.api.builder.FetchRecordBuilder.fetchRecord;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class DataFetchCronJobTests {
+    private DataFetchCronJob sut;
+
     @Autowired
     private FetchRecordRepository fetchRecordRepository;
-    @Autowired
-    private StockRecordRepository stockRecordRepository;
-    @Autowired
-    private CompanyRepository companyRepository;
-    @Autowired
-    private StockRecordsSaver stockRecordsSaver;
-
-
-    private DataFetchCronJob dataFetchCronJob;
 
     @BeforeEach
     void setup() {
         fetchRecordRepository.deleteAll();
-        stockRecordRepository.deleteAll();
-        companyRepository.deleteAll();
+    }
+
+    @AfterEach
+    void teardown() {
+        fetchRecordRepository.deleteAll();
+    }
+
+    private void saveFetchRecord(LocalDate localDate) {
+        fetchRecordRepository.save(FetchRecordBuilder.fetchRecord()
+                .stockRecordDate(localDate)
+                .build());
     }
 
     @Test
-    void fetchDataTest() throws JsonProcessingException {
+    @DisplayName("마지막 수집 날짜 이후부터 현재까지 데이터 fetch")
+    void fetchDataBetweenLastAndNow() {
         //given
-        dataFetchCronJob = new DataFetchCronJob(
-                stockRecordsSaver,
-                fetchRecordRepository,
-                new MockTimeManager(localDate("2022-10-13")),
-                new MockDataFetchProperties(localDate("2000-01-01"))
-        );
-        FetchRecord fetchRecord = fetchRecord()
-                .stockRecordDate(localDate("2022-10-12"))
-                .build();
-        fetchRecordRepository.save(fetchRecord);
+        LocalDate givenCurrentDate = localDate("2022-10-13");
+        LocalDate lastFetchRecordSavedDate = localDate("2022-10-10");
 
+        saveFetchRecord(lastFetchRecordSavedDate);
+        MockStockRecordSaver mockStockRecordSaver = new MockStockRecordSaver();
+
+        sut = new DataFetchCronJob(
+                mockStockRecordSaver,
+                fetchRecordRepository,
+                new MockTimeManager(givenCurrentDate),
+                new MockDataFetchProperties()
+        );
+        
         //when
-        dataFetchCronJob.fetch();
+        sut.fetch();
 
         //then
-        assertFetchRecordSavedAt(localDate("2022-10-13"));
-        assertStockRecordsSavedAt(localDate("2022-10-13"));
+        List<LocalDate> shouldBeRequestedDates =
+                List.of(localDate("2022-10-11"), localDate("2022-10-12"), localDate("2022-10-13"));
+        assertSaveRequestedDates(mockStockRecordSaver.getRequestDates(), shouldBeRequestedDates);
     }
 
     @Test
-    void whenNoFetchRecord_thenFetchStartAtInitialDate() {
+    @DisplayName("fetch 가 처음이면, 지정된 시작 날짜부터 현재날짜까지 fetch")
+    void whenNoFetchRecord_thenFetchStartFromConfiguredDate() {
         //given
-        LocalDate now = localDate("2022-06-10");
-        LocalDate fetchStartDate = localDate("2022-06-08");
+        LocalDate givenCurrentDate = localDate("2022-06-10");
+        LocalDate configuredStartDate = localDate("2022-06-08");
 
-        dataFetchCronJob = new DataFetchCronJob(
-                stockRecordsSaver,
+        MockStockRecordSaver mockStockRecordSaver = new MockStockRecordSaver();
+
+        sut = new DataFetchCronJob(
+                mockStockRecordSaver,
                 fetchRecordRepository,
-                new MockTimeManager(now),
-                new MockDataFetchProperties(fetchStartDate)
+                new MockTimeManager(givenCurrentDate),
+                new MockDataFetchProperties(configuredStartDate)
         );
 
         //when
-        dataFetchCronJob.fetch();
+        sut.fetch();
 
         //then
-        assertFetchRecordSavedAt(localDate("2022-06-08"));
-        assertFetchRecordSavedAt(localDate("2022-06-09"));
-        assertFetchRecordSavedAt(localDate("2022-06-10"));
+        List<LocalDate> shouldBeRequestedDates =
+                List.of(localDate("2022-06-08"), localDate("2022-06-09"), localDate("2022-06-10"));
+        assertSaveRequestedDates(mockStockRecordSaver.getRequestDates(), shouldBeRequestedDates);
     }
 
-    private void assertFetchRecordSavedAt(LocalDate localDate) {
-        List<FetchRecord> fetchRecords = fetchRecordRepository.findAll();
-        boolean exist = fetchRecords.stream()
-                .anyMatch(o -> o.getStockRecordDate().equals(localDate));
-        assertThat(exist).isTrue();
-    }
-
-    private void assertStockRecordsSavedAt(LocalDate localDate) {
-        List<StockRecord> all = stockRecordRepository.findAll();
-        boolean b = all.stream()
-                .anyMatch(o -> o.getRecordDate().equals(localDate));
-        assertThat(b).isTrue();
+    private void assertSaveRequestedDates(List<LocalDate> localDates, List<LocalDate> containedDates) {
+        boolean isSame = IntStream.range(0, localDates.size())
+                .allMatch(idx -> localDates.get(idx).equals(containedDates.get(idx)));
+        assertThat(isSame).isTrue();
     }
 }
