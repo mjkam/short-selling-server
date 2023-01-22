@@ -74,7 +74,6 @@ public class CompanyIntegrationTests {
     }
 
     private void assertContainsCompanyCodes(List<CompanyDto> companies, List<String> companyCodes) {
-        companies.forEach(o -> System.out.println(o.getCompanyCode()));
         boolean existCompanyCodesInCompanies = companies.stream()
                 .allMatch(company -> companyCodes.contains(company.getCompanyCode()));
         assertThat(existCompanyCodesInCompanies).isTrue();
