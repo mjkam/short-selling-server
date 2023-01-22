@@ -1,7 +1,6 @@
 package com.example.demo.api;
 
-import com.example.demo.BaseControllerTest;
-import com.example.demo.TimeUtils;
+import com.example.demo.BaseTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
 import com.example.demo.controller.Top50Controller;
@@ -10,11 +9,9 @@ import com.example.demo.domain.Company;
 import com.example.demo.domain.MarketType;
 import com.example.demo.domain.StockRecord;
 import com.example.demo.service.Top50Service;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,7 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @WebMvcTest(Top50Controller.class)
-public class Top50ControllerTests extends BaseControllerTest {
+public class Top50Tests extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean

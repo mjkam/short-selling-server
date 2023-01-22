@@ -1,6 +1,6 @@
 package com.example.demo.api;
 
-import com.example.demo.BaseControllerTest;
+import com.example.demo.BaseTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
 import com.example.demo.controller.StockRecordController;
@@ -12,8 +12,6 @@ import com.example.demo.domain.StockRecord;
 import com.example.demo.exception.ExceptionCode;
 import com.example.demo.exception.ExceptionResponse;
 import com.example.demo.service.StockRecordService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StockRecordController.class)
-public class StockRecordControllerTests extends BaseControllerTest {
+public class StockRecordTests extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean

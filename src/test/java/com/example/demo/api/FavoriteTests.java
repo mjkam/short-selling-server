@@ -1,18 +1,15 @@
 package com.example.demo.api;
 
-import com.example.demo.BaseControllerTest;
+import com.example.demo.BaseTest;
 import com.example.demo.controller.FavoriteController;
 import com.example.demo.controller.dto.RegisterFavoriteRequest;
 import com.example.demo.exception.ExceptionCode;
 import com.example.demo.exception.ExceptionResponse;
 import com.example.demo.service.FavoriteService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,7 +26,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @WebMvcTest(FavoriteController.class)
-public class FavoriteControllerTests extends BaseControllerTest {
+public class FavoriteTests extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
 
