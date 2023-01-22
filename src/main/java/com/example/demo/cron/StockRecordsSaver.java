@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -22,33 +23,33 @@ public class StockRecordsSaver {
 
     private final KRXApi krxApi;
 
+    private void saveRecords(MarketType marketType, List<Company> companies, LocalDate searchDate) {
+        List<KRXStockRecord> krxStockRecords = krxApi.getStockRecordsAt(searchDate, marketType);
+        List<String> companyCodes = companies.stream()
+                .map(Company::getCompanyCode)
+                .collect(Collectors.toList());
+        List<Company> newCompanies = companyRepository.saveAll(krxStockRecords.stream()
+                .filter(krxStockRecord -> !companyCodes.contains(krxStockRecord.getCompanyCode()))
+                .map(krxStockRecord -> new Company(krxStockRecord, marketType))
+                .collect(Collectors.toList()));
+        companies.addAll(newCompanies);
 
-    @Transactional
-    public void save(LocalDate searchDate) {
-        List<KRXStockRecord> kospiRecords = krxApi.getStockRecordsAt(searchDate, MarketType.KOSPI);
-        List<KRXStockRecord> kosdaqRecords = krxApi.getStockRecordsAt(searchDate, MarketType.KOSDAQ);
-        List<KRXStockRecord> krxStockRecords = new ArrayList<>();
-        krxStockRecords.addAll(kospiRecords);
-        krxStockRecords.addAll(kosdaqRecords);
-        if (krxStockRecords.size() == 0) {
-            return;
-        }
-        List<Company> companies = companyRepository.findAll();
-        List<Company> newCompanies = new ArrayList<>();
-        List<StockRecord> newStockRecords = new ArrayList<>();
+        List<StockRecord> result = new ArrayList<>();
         for (KRXStockRecord krxStockRecord: krxStockRecords) {
             Company company = companies.stream()
                     .filter(o -> o.getCompanyCode().equals(krxStockRecord.getCompanyCode()))
                     .findAny()
-                    .orElse(null);
-            if (company == null) {
-                company = new Company(krxStockRecord, MarketType.KOSPI);
-                newCompanies.add(company);
-            }
-            newStockRecords.add(new StockRecord(company, krxStockRecord, searchDate));
+                    .orElseThrow(() -> new RuntimeException(""));
+            result.add(new StockRecord(company, krxStockRecord, searchDate));
         }
-        companyRepository.saveAll(newCompanies);
-        stockRecordRepository.saveAll(newStockRecords);
+        stockRecordRepository.saveAll(result);
+    }
+
+    @Transactional
+    public void save(LocalDate searchDate) {
+        List<Company> companies = companyRepository.findAll();
+        saveRecords(MarketType.KOSPI, companies, searchDate);
+        saveRecords(MarketType.KOSDAQ, companies, searchDate);
         fetchRecordRepository.save(new FetchRecord(searchDate, LocalDateTime.now()));
     }
 }
