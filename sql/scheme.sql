@@ -1,6 +1,6 @@
-DROP DATABASE tdd;
-CREATE DATABASE IF NOT EXISTS tdd default character set utf8 collate utf8_general_ci;
-use tdd;
+-- DROP DATABASE short_selling;
+CREATE DATABASE IF NOT EXISTS short_selling default character set utf8 collate utf8_general_ci;
+use short_selling;
 
 CREATE TABLE company
 (
@@ -11,7 +11,7 @@ CREATE TABLE company
     logo_image_name varchar(200),
     PRIMARY KEY (id),
     UNIQUE (company_code)
-)
+);
 
 DROP TABLE IF EXISTS fetch_record;
 CREATE TABLE fetch_record
@@ -36,7 +36,7 @@ CREATE TABLE stock_record
     short_selling_ratio       float,
     PRIMARY KEY (id),
     UNIQUE (company_id, record_date)
-)
+);
 
 CREATE TABLE favorite_record
 (
@@ -45,4 +45,4 @@ CREATE TABLE favorite_record
     count        int,
     PRIMARY KEY (id),
     UNIQUE (company_code)
-)
+);

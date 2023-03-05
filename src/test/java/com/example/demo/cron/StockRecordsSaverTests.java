@@ -1,5 +1,6 @@
 package com.example.demo.cron;
 
+import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.KRXStockRecordBuilder;
 import com.example.demo.domain.Company;
@@ -24,8 +25,7 @@ import static com.example.demo.TimeUtils.localDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
-public class StockRecordsSaverTests {
+public class StockRecordsSaverTests extends AbstractIntegrationTest {
     private StockRecordsSaver sut;
 
     @Autowired

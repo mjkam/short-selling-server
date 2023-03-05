@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.FetchRecordBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
@@ -27,8 +28,7 @@ import static com.example.demo.TimeUtils.localDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-public class Top50ServiceTests {
+public class Top50ServiceTests extends AbstractIntegrationTest {
     @Autowired
     private Top50Service sut;
     @Autowired

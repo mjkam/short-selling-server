@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.controller.dto.CompanyDto;
 import com.example.demo.controller.dto.GetCompaniesResponse;
@@ -24,9 +25,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-public class CompanyIntegrationTests {
+public class CompanyIntegrationTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

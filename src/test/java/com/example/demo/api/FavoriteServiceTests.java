@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.FavoriteRecordBuilder;
 import com.example.demo.domain.Company;
@@ -18,8 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-public class FavoriteServiceTests {
+public class FavoriteServiceTests extends AbstractIntegrationTest {
     @Autowired
     private FavoriteService favoriteService;
     @Autowired

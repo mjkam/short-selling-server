@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.TimeManager;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
@@ -24,8 +25,7 @@ import static com.example.demo.TimeUtils.localDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
-public class StockRecordServiceTests {
+public class StockRecordServiceTests extends AbstractIntegrationTest {
     @Autowired
     private StockRecordService sut;
     @Autowired

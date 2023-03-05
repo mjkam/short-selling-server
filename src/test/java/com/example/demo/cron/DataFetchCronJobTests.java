@@ -1,5 +1,6 @@
 package com.example.demo.cron;
 
+import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.MockDataFetchProperties;
 import com.example.demo.MockStockRecordSaver;
 import com.example.demo.MockTimeManager;
@@ -19,8 +20,7 @@ import java.util.stream.IntStream;
 import static com.example.demo.TimeUtils.localDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-public class DataFetchCronJobTests {
+public class DataFetchCronJobTests extends AbstractIntegrationTest {
     private DataFetchCronJob sut;
 
     @Autowired
