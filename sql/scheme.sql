@@ -1,48 +1,46 @@
 -- DROP DATABASE short_selling;
-CREATE DATABASE IF NOT EXISTS short_selling default character set utf8 collate utf8_general_ci;
-use short_selling;
+CREATE DATABASE IF NOT EXISTS short_selling DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE short_selling;
 
+DROP TABLE IF EXISTS company;
 CREATE TABLE company
 (
-    id              bigint AUTO_INCREMENT,
-    company_code    varchar(10),
-    name            varchar(200),
-    market_type     varchar(100),
-    logo_image_name varchar(200),
-    PRIMARY KEY (id),
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    company_code    VARCHAR(10)                       NOT NULL,
+    name            VARCHAR(200)                      NOT NULL,
+    market_type     VARCHAR(100)                      NOT NULL,
+    logo_image_name VARCHAR(200)                      NOT NULL,
     UNIQUE (company_code)
 );
 
 DROP TABLE IF EXISTS fetch_record;
 CREATE TABLE fetch_record
 (
-    id                bigint AUTO_INCREMENT,
-    stock_record_date date,
-    executed_datetime datetime,
-    PRIMARY KEY (id),
+    id                BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    stock_record_date DATE                              NOT NULL,
+    executed_datetime DATETIME                          NOT NULL,
     UNIQUE (stock_record_date)
 );
 
 DROP TABLE IF EXISTS stock_record;
 CREATE TABLE stock_record
 (
-    id                        bigint AUTO_INCREMENT,
-    company_id                bigint,
-    record_date               date,
-    short_selling_share_count bigint,
-    listed_share_count        bigint,
-    short_selling_amount      bigint,
-    listed_share_amount       bigint,
-    short_selling_ratio       float,
-    PRIMARY KEY (id),
+    id                        BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    company_id                BIGINT                            NOT NULL,
+    record_date               DATE                              NOT NULL,
+    short_selling_share_count BIGINT                            NOT NULL,
+    listed_share_count        BIGINT                            NOT NULL,
+    short_selling_amount      BIGINT                            NOT NULL,
+    listed_share_amount       BIGINT                            NOT NULL,
+    short_selling_ratio       FLOAT                             NOT NULL,
     UNIQUE (company_id, record_date)
 );
 
+DROP TABLE IF EXISTS favorite_record;
 CREATE TABLE favorite_record
 (
-    id           bigint AUTO_INCREMENT,
-    company_code varchar(10),
-    count        int,
-    PRIMARY KEY (id),
+    id           BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    company_code VARCHAR(10)                       NOT NULL,
+    count        INT                               NOT NULL,
     UNIQUE (company_code)
 );
