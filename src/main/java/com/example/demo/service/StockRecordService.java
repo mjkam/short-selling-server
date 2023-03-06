@@ -5,12 +5,14 @@ import com.example.demo.domain.StockRecord;
 import com.example.demo.repository.StockRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StockRecordService {
     private final StockRecordRepository stockRecordRepository;
     private final TimeManager timeManager;
