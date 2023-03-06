@@ -15,12 +15,10 @@
 
 그래서 ```Docker``` 를 미리 설치해야 모든 테스트가 정상적으로 통과할 수 있습니다.
 
-[Docker](https://docs.docker.com/get-docker/)
+[Docker 설치](https://docs.docker.com/get-docker/)
 ```
 git clone https://github.com/mjkam/short-selling-server.git
 cd short-selling-server
 ./gradlew test
 ```
 위 명령어 실행 후 build/reports/jacoco/test/html/index.html 를 브라우저로 열면 ```테스트 커버리지``` 를 확인할 수 있습니다.
-
-## 실행
