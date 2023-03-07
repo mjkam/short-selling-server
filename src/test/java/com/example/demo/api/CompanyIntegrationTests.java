@@ -1,13 +1,10 @@
 package com.example.demo.api;
 
 import com.example.demo.AbstractIntegrationTest;
-import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.controller.dto.CompanyDto;
 import com.example.demo.controller.dto.GetCompaniesResponse;
 import com.example.demo.domain.Company;
-import com.example.demo.domain.MarketType;
 import com.example.demo.repository.CompanyRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.demo.api.builder.CompanyBuilder.*;
+import static com.example.demo.api.builder.CompanyBuilder.company;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
