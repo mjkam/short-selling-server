@@ -7,9 +7,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 public final class CompanyBuilder {
     private Long id;
     private String companyCode;
-    private String name;
-    private MarketType marketType;
-    private String logoImageName;
+    private String name = "";
+    private MarketType marketType = MarketType.KOSPI;
+    private String logoImageName = "";
 
     private CompanyBuilder() {
     }

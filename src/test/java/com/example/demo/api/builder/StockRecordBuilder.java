@@ -10,11 +10,11 @@ public final class StockRecordBuilder {
     private Long id;
     private Company company;
     private LocalDate recordDate;
-    private Long shortSellingShareCount;
-    private Long listedShareCount;
-    private Long shortSellingAmount;
-    private Long listedShareAmount;
-    private Float shortSellingRatio;
+    private Long shortSellingShareCount = 0L;
+    private Long listedShareCount = 0L;
+    private Long shortSellingAmount = 0L;
+    private Long listedShareAmount = 0L;
+    private Float shortSellingRatio = 0f;
 
     private StockRecordBuilder() {
     }
