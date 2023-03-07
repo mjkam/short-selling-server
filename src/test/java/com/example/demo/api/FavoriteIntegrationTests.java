@@ -1,18 +1,12 @@
 package com.example.demo.api;
 
 import com.example.demo.AbstractIntegrationTest;
-import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.FavoriteRecordBuilder;
-import com.example.demo.controller.dto.CompanyDto;
-import com.example.demo.controller.dto.GetCompaniesResponse;
 import com.example.demo.controller.dto.RegisterFavoriteRequest;
 import com.example.demo.domain.Company;
 import com.example.demo.domain.FavoriteRecord;
-import com.example.demo.domain.MarketType;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.FavoriteRecordRepository;
-import com.example.demo.service.FavoriteService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,17 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-
-import static com.example.demo.api.builder.CompanyBuilder.*;
+import static com.example.demo.api.builder.CompanyBuilder.company;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
