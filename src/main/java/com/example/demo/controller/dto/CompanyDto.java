@@ -4,8 +4,8 @@ import com.example.demo.domain.Company;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class CompanyDto {
     private String companyCode;
     private String companyName;
@@ -17,5 +17,3 @@ public class CompanyDto {
         this.logoImageName = company.getLogoImageName();
     }
 }
-
-

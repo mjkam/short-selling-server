@@ -10,39 +10,31 @@ import com.example.demo.repository.CompanyRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.example.demo.api.builder.CompanyBuilder.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 public class CompanyIntegrationTests extends AbstractIntegrationTest {
     @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
     @Autowired
     private CompanyRepository companyRepository;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private CompanyBuilder companyBuilder;
 
     @BeforeEach
     void setup() {
         companyRepository.deleteAll();
-
-        companyBuilder = CompanyBuilder.company()
-                .name("")
-                .logoImageName("")
-                .marketType(MarketType.KOSPI);
     }
 
     @AfterEach
@@ -51,10 +43,13 @@ public class CompanyIntegrationTests extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("회사 데이터 전체 가져오기")
     void getAllCompanies() throws Exception {
         //given
-        companyRepository.save(company("company1"));
-        companyRepository.save(company("company2"));
+        Company company1 = company().companyCode("company1").build();
+        Company company2 = company().companyCode("company2").build();
+        companyRepository.save(company1);
+        companyRepository.save(company2);
 
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/companies"))
@@ -62,20 +57,18 @@ public class CompanyIntegrationTests extends AbstractIntegrationTest {
                 .andReturn().getResponse();
 
         //then
-        List<CompanyDto> companies = objectMapper.readValue(response.getContentAsString(), GetCompaniesResponse.class).getCompanies();
-        assertThat(companies.size()).isEqualTo(2);
-        assertContainsCompanyCodes(companies, List.of("company1", "company2"));
+        List<CompanyDto> resultCompanies = objectMapper.readValue(response.getContentAsString(), GetCompaniesResponse.class).getCompanies();
+        assertThat(resultCompanies.size()).isEqualTo(List.of(company1, company2).size());
+        assertThatResultHaveCompanies(resultCompanies, List.of(company1, company2));
     }
 
-    private Company company(String companyCode) {
-        return companyBuilder.but()
-                .companyCode(companyCode)
-                .build();
-    }
+    private void assertThatResultHaveCompanies(List<CompanyDto> resultCompanies, List<Company> savedCompanies) {
+        List<String> savedCompanyCodes = savedCompanies.stream()
+                .map(Company::getCompanyCode)
+                .collect(Collectors.toList());
 
-    private void assertContainsCompanyCodes(List<CompanyDto> companies, List<String> companyCodes) {
-        boolean existCompanyCodesInCompanies = companies.stream()
-                .allMatch(company -> companyCodes.contains(company.getCompanyCode()));
+        boolean existCompanyCodesInCompanies = resultCompanies.stream()
+                .allMatch(company -> savedCompanyCodes.contains(company.getCompanyCode()));
         assertThat(existCompanyCodesInCompanies).isTrue();
     }
 }
