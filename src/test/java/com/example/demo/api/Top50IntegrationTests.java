@@ -1,49 +1,34 @@
 package com.example.demo.api;
 
 import com.example.demo.AbstractIntegrationTest;
-import com.example.demo.BaseTest;
-import com.example.demo.api.builder.CompanyBuilder;
-import com.example.demo.api.builder.FetchRecordBuilder;
-import com.example.demo.api.builder.StockRecordBuilder;
-import com.example.demo.controller.Top50Controller;
-import com.example.demo.controller.dto.GetStockRecordsResponse;
 import com.example.demo.controller.dto.GetTop50Response;
-import com.example.demo.controller.dto.StockRecordDto;
 import com.example.demo.domain.Company;
-import com.example.demo.domain.FetchRecord;
-import com.example.demo.domain.MarketType;
 import com.example.demo.domain.StockRecord;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.FetchRecordRepository;
 import com.example.demo.repository.StockRecordRepository;
-import com.example.demo.service.Top50Service;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.TimeUtils.*;
-import static com.example.demo.api.builder.CompanyBuilder.*;
-import static com.example.demo.api.builder.FetchRecordBuilder.*;
-import static com.example.demo.api.builder.StockRecordBuilder.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.example.demo.api.builder.CompanyBuilder.company;
+import static com.example.demo.api.builder.FetchRecordBuilder.fetchRecord;
+import static com.example.demo.api.builder.StockRecordBuilder.stockRecord;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-public class Top50Tests extends AbstractIntegrationTest {
+public class Top50IntegrationTests extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
