@@ -22,8 +22,8 @@ public class StockRecordController {
 
     @GetMapping("/company/{companyCode}/stock-records")
     public GetStockRecordsResponse getStockRecords(
-            @NotEmpty @Length(min = 6, max = 10) @PathVariable("companyCode") String companyCode,
-            @Range(max = 130) @RequestParam("duration") int duration
+            @PathVariable("companyCode") String companyCode,
+            @RequestParam("duration") int duration
     ) {
         return new GetStockRecordsResponse(stockRecordService.getStockRecords(companyCode, duration));
     }
