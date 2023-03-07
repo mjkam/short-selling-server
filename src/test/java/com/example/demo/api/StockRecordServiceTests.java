@@ -4,6 +4,8 @@ import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.TimeManager;
 import com.example.demo.api.builder.CompanyBuilder;
 import com.example.demo.api.builder.StockRecordBuilder;
+import com.example.demo.controller.dto.GetStockRecordsResponse;
+import com.example.demo.controller.dto.StockRecordDto;
 import com.example.demo.domain.Company;
 import com.example.demo.domain.MarketType;
 import com.example.demo.domain.StockRecord;
@@ -15,19 +17,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.demo.TimeUtils.localDate;
+import static com.example.demo.api.builder.CompanyBuilder.*;
+import static com.example.demo.api.builder.StockRecordBuilder.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@AutoConfigureMockMvc
 public class StockRecordServiceTests extends AbstractIntegrationTest {
     @Autowired
-    private StockRecordService sut;
+    private MockMvc mockMvc;
+
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
@@ -35,69 +46,65 @@ public class StockRecordServiceTests extends AbstractIntegrationTest {
     @MockBean
     private TimeManager timeManager;
 
-    private CompanyBuilder companyBuilder;
-    private StockRecordBuilder stockRecordBuilder;
-
-
     @BeforeEach
     void setup() {
-        companyRepository.deleteAll();
-        stockRecordRepository.deleteAll();
-
-        companyBuilder = CompanyBuilder.company()
-                .name("")
-                .logoImageName("")
-                .marketType(MarketType.KOSPI);
-        stockRecordBuilder = StockRecordBuilder.stockRecord()
-                .listedShareCount(0L)
-                .shortSellingAmount(0L)
-                .shortSellingShareCount(0L)
-                .listedShareAmount(0L)
-                .shortSellingRatio(0f);
+        cleanDB();
     }
 
     @AfterEach
     void teardown() {
+        cleanDB();
+    }
+
+    void cleanDB() {
         companyRepository.deleteAll();
         stockRecordRepository.deleteAll();
     }
 
-    private Company company(String companyCode) {
-        return companyBuilder.but()
-                .companyCode(companyCode)
-                .build();
-    }
-
-    private StockRecord stockRecord(Company company, LocalDate localDate) {
-        return stockRecordBuilder.but()
-                .company(company)
-                .recordDate(localDate)
-                .build();
-    }
-
     @Test
     @DisplayName("StockRecord 데이터 가져오기")
-    void getStockRecords() {
+    void getStockRecords() throws Exception {
         //given
         given(timeManager.getCurrentDate()).willReturn(localDate("2022-10-13"));
 
-        Company company1 = companyRepository.save(company("company1"));
-        stockRecordRepository.save(stockRecord(company1, localDate("2022-10-13")));
-        stockRecordRepository.save(stockRecord(company1, localDate("2022-10-12")));
-        stockRecordRepository.save(stockRecord(company1, localDate("2022-10-11")));
-        stockRecordRepository.save(stockRecord(company1, localDate("2022-10-10")));
+        Company company1 = companyRepository.save(company().companyCode("company1").build());
+        StockRecord stockRecord1 = stockRecord()
+                .company(company1)
+                .recordDate(localDate("2022-10-13"))
+                .build();
+        StockRecord stockRecord2 = stockRecord()
+                .company(company1)
+                .recordDate(localDate("2022-10-12"))
+                .build();
+        StockRecord stockRecord3 = stockRecord()
+                .company(company1)
+                .recordDate(localDate("2022-10-11"))
+                .build();
+        StockRecord stockRecord4 = stockRecord()
+                .company(company1)
+                .recordDate(localDate("2022-10-10"))
+                .build();
+        stockRecordRepository.saveAll(List.of(stockRecord1, stockRecord2, stockRecord3, stockRecord4));
 
-        Company company2 = companyRepository.save(company("company2"));
-        stockRecordRepository.save(stockRecord(company2, localDate("2022-10-10")));
+        Company company2 = companyRepository.save(company().companyCode("company2").build());
+        StockRecord stockRecord5 = stockRecord()
+                .company(company2)
+                .recordDate(localDate("2022-10-13"))
+                .build();
+        stockRecordRepository.save(stockRecord5);
+
 
         //when
-        List<StockRecord> result = sut.getStockRecords("company1", 3);
+        MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/company/company1/stock-records?duration=3"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
 
         //then
-        assertThat(result.size()).isEqualTo(4);
-        assertThat(result.get(0).getRecordDate()).isEqualTo(localDate("2022-10-13").toString());
-        assertThat(result.get(1).getRecordDate()).isEqualTo(localDate("2022-10-12").toString());
-        assertThat(result.get(2).getRecordDate()).isEqualTo(localDate("2022-10-11").toString());
-        assertThat(result.get(3).getRecordDate()).isEqualTo(localDate("2022-10-10").toString());
+        List<StockRecordDto> stockRecords = objectMapper.readValue(response.getContentAsString(), GetStockRecordsResponse.class).getStockRecords();
+        assertThat(stockRecords.size()).isEqualTo(4);
+        assertThat(stockRecords.get(0).getRecordDate()).isEqualTo(localDate("2022-10-13").toString());
+        assertThat(stockRecords.get(1).getRecordDate()).isEqualTo(localDate("2022-10-12").toString());
+        assertThat(stockRecords.get(2).getRecordDate()).isEqualTo(localDate("2022-10-11").toString());
+        assertThat(stockRecords.get(3).getRecordDate()).isEqualTo(localDate("2022-10-10").toString());
     }
 }
