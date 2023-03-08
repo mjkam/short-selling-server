@@ -1,20 +1,20 @@
 package com.example.demo;
 
-import com.example.demo.cron.StockRecordsSaver;
+import com.example.demo.cron.StockRecordsApplier;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockStockRecordSaver extends StockRecordsSaver {
+public class MockStockRecordApplier extends StockRecordsApplier {
     private List<LocalDate> requestedDates = new ArrayList<>();
 
-    public MockStockRecordSaver() {
+    public MockStockRecordApplier() {
         super(null, null, null, null);
     }
 
     @Override
-    public void save(LocalDate localDate) {
+    public void apply(LocalDate localDate) {
         this.requestedDates.add(localDate);
     }
 

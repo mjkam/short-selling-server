@@ -2,7 +2,7 @@ package com.example.demo.cron;
 
 import com.example.demo.AbstractIntegrationTest;
 import com.example.demo.MockDataFetchProperties;
-import com.example.demo.MockStockRecordSaver;
+import com.example.demo.MockStockRecordApplier;
 import com.example.demo.MockTimeManager;
 import com.example.demo.api.builder.FetchRecordBuilder;
 import com.example.demo.repository.FetchRecordRepository;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -50,7 +49,7 @@ public class DataFetchCronJobTests extends AbstractIntegrationTest {
         LocalDate lastFetchRecordSavedDate = localDate("2022-10-10");
 
         saveFetchRecord(lastFetchRecordSavedDate);
-        MockStockRecordSaver mockStockRecordSaver = new MockStockRecordSaver();
+        MockStockRecordApplier mockStockRecordSaver = new MockStockRecordApplier();
 
         sut = new DataFetchCronJob(
                 mockStockRecordSaver,
@@ -75,7 +74,7 @@ public class DataFetchCronJobTests extends AbstractIntegrationTest {
         LocalDate givenCurrentDate = localDate("2022-06-10");
         LocalDate configuredStartDate = localDate("2022-06-08");
 
-        MockStockRecordSaver mockStockRecordSaver = new MockStockRecordSaver();
+        MockStockRecordApplier mockStockRecordSaver = new MockStockRecordApplier();
 
         sut = new DataFetchCronJob(
                 mockStockRecordSaver,

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
@@ -25,8 +24,8 @@ import static com.example.demo.TimeUtils.localDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-public class StockRecordsSaverTests extends AbstractIntegrationTest {
-    private StockRecordsSaver sut;
+public class StockRecordsApplierTests extends AbstractIntegrationTest {
+    private StockRecordsApplier sut;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -59,7 +58,7 @@ public class StockRecordsSaverTests extends AbstractIntegrationTest {
                 .name("")
                 .logoImageName("");
 
-        sut = new StockRecordsSaver(
+        sut = new StockRecordsApplier(
                 companyRepository, stockRecordRepository, fetchRecordRepository, krxApi);
     }
 
@@ -102,7 +101,7 @@ public class StockRecordsSaverTests extends AbstractIntegrationTest {
         Company company2 = saveCompany(companyCode2, MarketType.KOSDAQ);
 
         //when
-        sut.save(givenDate);
+        sut.apply(givenDate);
 
         //then
         assertStockRecordExist(company1, givenDate);
@@ -133,7 +132,7 @@ public class StockRecordsSaverTests extends AbstractIntegrationTest {
                 .willReturn(List.of(krxStockRecord1));
 
         //when
-        sut.save(givenDate);
+        sut.apply(givenDate);
 
         //then
         List<FetchRecord> allFetchRecords = fetchRecordRepository.findAll();
@@ -158,7 +157,7 @@ public class StockRecordsSaverTests extends AbstractIntegrationTest {
                 .willReturn(List.of(krxStockRecord2));
 
         //when
-        sut.save(givenDate);
+        sut.apply(givenDate);
 
         //then
         assertSaveCompanyMarketType(companyCode1, MarketType.KOSPI);
@@ -191,7 +190,7 @@ public class StockRecordsSaverTests extends AbstractIntegrationTest {
                 .willReturn(List.of(krxStockRecord1, krxStockRecord2, krxStockRecord3));
 
         //when
-        sut.save(givenDate);
+        sut.apply(givenDate);
 
         //then
         assertCompanyCodeSaved(companyCode3);
