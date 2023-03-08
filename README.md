@@ -21,4 +21,3 @@ git clone https://github.com/mjkam/short-selling-server.git
 cd short-selling-server
 ./gradlew test
 ```
-위 명령어 실행 후 build/reports/jacoco/test/html/index.html 를 브라우저로 열면 ```테스트 커버리지``` 를 확인할 수 있습니다.
